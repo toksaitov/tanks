@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Interactive Sandbox</title>
+        <style>
+            body { margin: 0; overflow: hidden; }
+        </style>
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                const canvas = document.getElementById('canvas')
+                const w = canvas.width  = window.innerWidth
+                const h = canvas.height = window.innerHeight
+                setup(canvas.getContext('2d'), w, h)
+                document.addEventListener('keydown', e => keyDown(e.key))
+            })
+        </script>
+    </head>
+    <body>
+        <canvas id="canvas"></canvas>
+        <script>
+            const fieldWidth = 20
+            const fieldHeight = 20
+
+            let cellSize
+            let fieldScreenWidth
+            let fieldScreenHeight
+            let fieldCenterShiftX
+            let fieldCenterShiftY
+
+            function setup(ctx, w, h) {
+                cellSize = Math.min(w / fieldWidth, h / fieldHeight)
+                fieldScreenWidth = fieldWidth * cellSize
+                fieldScreenHeight = fieldHeight * cellSize
+                fieldCenterShiftX = (w - fieldScreenWidth) / 2
+                fieldCenterShiftY = (h - fieldScreenHeight) / 2
+
+                window.requestAnimationFrame(timestamp => draw(ctx, w, h, timestamp));
+            }
+
+            function draw(ctx, w, h, timestamp) {
+                ctx.fillStyle = 'black'
+                ctx.beginPath()
+                ctx.rect(0, 0, w, h)
+                ctx.fill()
+                
+                for (let y = 0; y < fieldHeight; ++y) {
+                    for (let x = 0; x < fieldWidth; ++x) {
+                        const screenX = fieldCenterShiftX + x * cellSize
+                        const screenY = fieldCenterShiftY + y * cellSize
+                        ctx.fillStyle = 'gray'
+                        ctx.beginPath()
+                        ctx.rect(screenX + 1, screenY + 1, cellSize - 2, cellSize - 2)
+                        ctx.fill()
+                    }
+                }
+
+                window.requestAnimationFrame(timestamp => draw(ctx, w, h, timestamp));
+            }
+
+            function keyDown(key) {
+                // TODO: добавить код обработки нажатия на клавиши
+            }
+        </script>
+    </body>
+</html>
