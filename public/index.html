@@ -6,6 +6,7 @@
         <style>
             body { margin: 0; overflow: hidden; }
         </style>
+        <script src="/socket.io/socket.io.js"></script>
         <script>
             document.addEventListener('DOMContentLoaded', () => {
                 const canvas = document.getElementById('canvas')
@@ -19,6 +20,8 @@
     <body>
         <canvas id="canvas"></canvas>
         <script>
+            let socket
+
             const fieldWidth = 20
             const fieldHeight = 20
 
@@ -72,6 +75,8 @@
             }
 
             function setup(ctx, w, h) {
+                socket = io()
+
                 cellSize = Math.min(w / fieldWidth, h / fieldHeight)
                 fieldScreenWidth = fieldWidth * cellSize
                 fieldScreenHeight = fieldHeight * cellSize
@@ -86,7 +91,7 @@
                 ctx.beginPath()
                 ctx.rect(0, 0, w, h)
                 ctx.fill()
-                
+
                 // Код рисования поля
                 for (let y = 0; y < fieldHeight; ++y) {
                     for (let x = 0; x < fieldWidth; ++x) {
@@ -113,7 +118,15 @@
             }
 
             function keyDown(key) {
-                // TODO: добавить код обработки нажатия на клавиши
+                switch (key) {
+                    case 'w':
+                    case 'a':
+                    case 's':
+                    case 'd':
+                    case ' ':
+                        socket.emit('cmd', key);
+                        break
+                }
             }
         </script>
     </body>
