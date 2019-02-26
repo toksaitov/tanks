@@ -23,6 +23,7 @@
   "homepage": "https://github.com/toksaitov/tanks#readme",
   "dependencies": {
     "express": "^4.16.4",
-    "socket.io": "^2.2.0"
+    "socket.io": "^2.2.0",
+    "unique-string": "^1.0.0"
   }
 }

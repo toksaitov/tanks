@@ -31,51 +31,18 @@
             let fieldCenterShiftX
             let fieldCenterShiftY
 
-            const gameObjects = {
-                'tank1': {
-                    'x': 0,
-                    'y': 0,
-                    'dx': 1,
-                    'dy': 0,
-                    'c': 'red',
-                    't': 't'
-                },
-                'tank2': {
-                    'x': fieldWidth - 1,
-                    'y': 0,
-                    'dx': -1,
-                    'dy': 0,
-                    'c': 'green',
-                    't': 't'
-                },
-                'tank3': {
-                    'x': fieldWidth - 1,
-                    'y': fieldHeight - 1,
-                    'dx': -1,
-                    'dy': 0,
-                    'c': 'blue',
-                    't': 't'
-                },
-                'tank4': {
-                    'x': 0,
-                    'y': fieldHeight - 1,
-                    'dx': 1,
-                    'dy': 0,
-                    'c': 'yellow',
-                    't': 't'
-                },
-                'bullet1': {
-                    'x': fieldWidth / 2,
-                    'y': fieldHeight / 2,
-                    'dx': 1,
-                    'dy': 0,
-                    'c': 'white',
-                    't': 'b'
-                }
-            }
+            let gameObjects = { }
 
             function setup(ctx, w, h) {
                 socket = io()
+                socket.on('upd', msg => {
+                    gameObjects = Object.assign({}, gameObjects, msg);
+                });
+                socket.on('dstr', msg => {
+                    for (let i = 0; i < msg.length; ++i) {
+                        delete gameObjects[msg[i]]
+                    }
+                });
 
                 cellSize = Math.min(w / fieldWidth, h / fieldHeight)
                 fieldScreenWidth = fieldWidth * cellSize
@@ -92,7 +59,6 @@
                 ctx.rect(0, 0, w, h)
                 ctx.fill()
 
-                // Код рисования поля
                 for (let y = 0; y < fieldHeight; ++y) {
                     for (let x = 0; x < fieldWidth; ++x) {
                         const screenX = fieldCenterShiftX + x * cellSize
@@ -104,14 +70,13 @@
                     }
                 }
 
-                // Код рисования игровых объектов
                 for (const [_, gameObject] of Object.entries(gameObjects)) {
                     const screenX = fieldCenterShiftX + gameObject.x * cellSize
                     const screenY = fieldCenterShiftY + gameObject.y * cellSize
                     ctx.fillStyle = gameObject.c
                     ctx.beginPath()
                     ctx.rect(screenX + 1, screenY + 1, cellSize - 2, cellSize - 2)
-                    ctx.fill()
+ 	                ctx.fill()
                 }
 
                 window.requestAnimationFrame(timestamp => draw(ctx, w, h, timestamp));
